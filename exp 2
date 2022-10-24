@@ -1,0 +1,115 @@
+create table product(
+product_no varchar(15) not null,
+description varchar(15) not null,
+company varchar(15) not null,
+price int not null,
+primary key (product_no));
+
+create table customer(cust_no varchar(15) not null,
+name varchar(15) not null,age int not null,
+city varchar(15) not null,pincode int not null,
+state varchar(15) not null,
+primary key (cust_no));
+
+create table supplier(s_no varchar(15) not null,sname varchar(15) not null,
+age int not null,city varchar(15) not null,
+primary key (s_no));
+
+create table purchase(order_no varchar(15) not null,
+custno varchar(15) not null,
+prono varchar(15) not null,
+quantity int not null,
+orderdate date,primary key (order_no),
+foreign key (custno) references customer(cust_no),
+foreign key (prono) references product(product_no));
+
+insert into supplier values('S001','Ivan Bayross',35,'Bombay');
+insert into supplier values('S002','Nirmala Agarwal',35,'Madras');
+insert into supplier values('C003','Susmitha',55,'Bombay');
+insert into supplier values('C004','Basu Navivndgi',45,'Bombay');
+insert into supplier values('C005','Ravi Sreedharan',25,'Delhi');
+insert into supplier values('C006','NandaGopal',25,'Madras');
+
+insert into customer values('C00001','Ivan Bayross',35,'Bombay',400054,'Maharashtra');
+insert into customer values('C00002','Vandana Saitwal',35,'Madras',780001,'Tamil Nadu');
+insert into customer values('C00003','Pramada Jaguste',55,'Bombay',400057,'Maharashtra');
+insert into customer values('C00004','Basu Navindgi',35,'Bombay',400054,'Maharashtra');
+insert into customer values('C00005','Ravi Sreedharan',25,'Delhi',100001,'Delhi');
+insert into customer values('C00006','Rukmini',25,'Madras',780001,'Tamil Nadu');
+
+insert into product values('P00001','12W Flood Light','Wipro',5000);
+insert into product values('P00002','Laptop Adapter','Dell',1560);
+insert into product values('P00003','Tablet','HCL',11000);
+insert into product values('P00004','Garnet 50W led','Wipro',999);
+insert into product values('P00005','Laptop Charger','HCL',1690);
+
+insert into purchase values('O00001','C00002','P00003',2,'20-01-16');
+insert into purchase values('O00002','C00003','P00002',1,'27-01-16');
+insert into purchase values('O00003','C00006','P00001',3,'20-02-16');
+insert into purchase values('O00004','C00003','P00005',4,'07-04-16');
+insert into purchase values('O00005','C00004','P00002',2,'22-05-16');
+insert into purchase values('O00006','C00005','P00004',1,'26-05-16');
+
+1)
+select name from customer where city='Madras';
+2)
+select custno from purchase where orderdate like '__-01-__';
+3)
+select company from product where price > 5000;
+4)
+select * from customer where name not like 'R%';
+5)
+alter table customer add email varchar(15);
+6)
+select * from customer where age>40 and state='Maharashtra';
+7)
+select company from product order by price;
+8)
+select avg(age) from customer;
+9)
+select distinct city from customer where state='Tamil Nadu' or state='Maharashtra';
+10)
+select avg(price) from product;
+11)
+select custno from purchase order by quantity;
+12)
+insert into product values('P00008','Mobile Charger','Apple',2000);
+   update purchase set prono='P00008' where custno='C00003';
+13)
+select count(cust_no) from customer where city='Delhi';
+14)
+select custno from purchase where quantity >3;
+15)
+update purchase set orderdate=NULL;
+   alter table purchase modify orderdate char(8);
+16)
+select min(price),max(price) from product;
+17)
+select company,count(product_no) from product where company='Wipro' or company ='HCL' group by company;
+18)
+select * from customer order by name;
+19)
+select * from purchase order by orderdate desc;
+
+ORDER_NO	CUSTNO		PRONO		  QUANTITY ORDERDAT
+--------------- --------------- --------------- ---------- --------
+O00006		C00005		P00004			 1 26-05-16
+O00005		C00004		P00002			 2 22-05-16
+O00004		C00003		P00005			 4 07-04-16
+O00003		C00006		P00001			 3 20-02-16
+O00002		C00003		P00002			 1 27-01-16
+O00001		C00002		P00003			 2 20-01-16
+
+20)
+delete from purchase where prono='P00003';
+   delete from product where product_no='P00003';
+21)
+create table newtab as (select order_no,orderdate from purchase);
+   select * from newtab;
+22)
+drop table newtab;
+23)
+24)select name from customer,purchase where cust_no=custno and quantity>1;
+25)select A.cust_no as A_no,A.name as A_name,B.cust_no as B_no,B.name as B_name from customer A,customer B where A.cust_no <> B.cust_no and A.city=B.city;
+26)select name from customer where name like 'R%';
+27)select sname from supplier union select name from customer;

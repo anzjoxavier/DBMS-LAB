@@ -1,0 +1,588 @@
+create table department (dep_no number(38) not null,dep_name varchar2(15) not null,loc varchar2(15) not null,mgr number(38) not null,exp_bdg number(38) not null,rev_bdg number(38) not null,primary key (dep_no));
+
+
+create table employee(empno number(38) not null,name varchar2(15) not null,job varchar2(15) not null,salary number(38) not null,comm varchar2(15),depno number(38),sex varchar2(6),foreign key (depno) references department(dep_no));
+
+create table dependent (pid number(38) not null, fname varchar2(15) not null ,lname varchar2(15) not null,place varchar2(15) not null, empno number(38) not null);
+
+
+insert into department values(60,'Shipping','Trivandrum',215,90000,0);
+insert into department values(10,'Accounting','Cochin',200,100000,0);
+insert into department values(30,'Research','Cochin',105,125000,0);
+insert into department values(40,'Sales','Trichur',109,280000,8000);
+insert into department values(50,'Manufacturing','Kottayam',210,130000,0);
+
+
+insert into employee values(100,'Wilson','CLRK',17000,NULL,10,'M');
+insert into employee values(101,'Smitha','SLSM',25000,1300,40,'F');
+insert into employee values(103,'Roy','ANLST',35000,NULL,30,'M');
+insert into employee values(105,'Watson','MNGR',45000,0,30,'M');
+insert into employee values(109,'Alan','MNGR',30000,8000,40,'M');
+insert into employee values(110,'Tina','CLRK',18000,NULL,50,'F');
+insert into employee values(200,'Karthika','MNGR',29000,NULL,10,'F');
+insert into employee values(210,'Rita','MNGR',36500,NULL,50,'F');
+insert into employee values(213,'Manacy','CLRK',16250,NULL,10,'F');
+insert into employee values(214,'Simpson','DRVR',8250,NULL,60,'M');
+insert into employee values(215,'Deepa','ANLST',27000,NULL,60,'F');
+insert into employee values(220,'Soosan','SLSM',28500,5300,60,'F');
+
+insert into dependent values(1010,'Anu','Jose','Trivandrum',214);
+insert into dependent values(1020,'Neenu','Thomas','Kollam',200);
+insert into dependent values(1022,'Anamika','Thampi','Kollam',200);
+insert into dependent values(1031,'Swetha','Das','Kottayam',109);
+
+1. Return details of all managers from employee table sorted alphabetically by name.
+select * from employee where job='MNGR' order by name;
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       109 Alan 	   MNGR 		30000 8000		      40
+M
+
+       200 Karthika	   MNGR 		29000			      10
+F
+
+       210 Rita 	   MNGR 		36500			      50
+F
+
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       105 Watson	   MNGR 		45000 0 		      30
+M
+
+2. Return details of all employees in department 40 ordered by EMPNO.
+select * from employee where depno=40 order by empno;
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       101 Smitha	   SLSM 		25000 1300		      40
+F
+
+       109 Alan 	   MNGR 		30000 8000		      40
+M
+
+3. Return information about all female employee ordered by NAME.
+select * from employee where sex='F' order by name;
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       215 Deepa	   ANLST		27000			      60
+F
+
+       200 Karthika	   MNGR 		29000			      10
+F
+
+       213 Manacy	   CLRK 		16250			      10
+F
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       210 Rita 	   MNGR 		36500			      50
+F
+
+       101 Smitha	   SLSM 		25000 1300		      40
+F
+
+       220 Soosan	   SLSM 		28500 5300		      60
+F
+
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       110 Tina 	   CLRK 		18000			      50
+F
+
+4. Find Minimum, Maximum and Average salary of employees in each department.
+
+select depno,avg(salary),min(salary),max(salary) from employee group by depno;
+
+     DEPNO AVG(SALARY) MIN(SALARY) MAX(SALARY)
+---------- ----------- ----------- -----------
+	30	 40000	     35000	 45000
+	40	 27500	     25000	 30000
+	50	 27250	     18000	 36500
+	10	 20750	     16250	 29000
+	60	 21250	      8250	 28500
+
+
+5. Find Maximum and Minimum commission paid(COMM),total commission paid and
+count of employees who were paid with commission.
+
+select max(comm),min(comm),sum(comm),count(comm) from employee;
+
+MAX(COMM)	MIN(COMM)	 SUM(COMM) COUNT(COMM)
+--------------- --------------- ---------- -----------
+8000		0		     14600	     4
+
+6. Number of employees listed in each job.
+
+select count(*),job from employee group by job;
+
+  COUNT(*) JOB
+---------- ---------------
+	 4 MNGR
+	 2 SLSM
+	 3 CLRK
+	 2 ANLST
+	 1 DRVR
+7. Total salary paid to each job in the category.
+
+select job,sum(salary) from employee group by job;
+
+JOB		SUM(SALARY)
+--------------- -----------
+MNGR		     140500
+SLSM		      53500
+CLRK		      51250
+ANLST		      62000
+DRVR		       8250
+
+8. Return all DEPT_ÑOs in employee table(Ensure that each DEPT_ÑO appears only once).
+select distinct depno from employee;
+
+     DEPNO
+----------
+	30
+	40
+	50
+	10
+	60
+
+9. Return EMPNO,NAME and SALARY of females in department 10.
+
+select empno,name,salary from employee where sex='F' and depno=10;
+
+     EMPNO NAME 	       SALARY
+---------- --------------- ----------
+       200 Karthika		29000
+       213 Manacy		16250
+
+10. Return EMPNO, NAME and SALARY of all male managers ordered by NAME.
+
+select empno,name,salary from employee where sex='M' order by name;
+
+     EMPNO NAME 	       SALARY
+---------- --------------- ----------
+       109 Alan 		30000
+       103 Roy			35000
+       214 Simpson		 8250
+       105 Watson		45000
+       100 Wilson		17000
+
+
+11. Return NAME and JOB of all female sales man and managers.
+
+select name,job from employee where sex='F' and (job='MNGR' or job ='SLSM');
+
+NAME		JOB
+--------------- ---------------
+Smitha		SLSM
+Karthika	MNGR
+Rita		MNGR
+Soosan		SLSM
+
+12. Display EMPNO and NAME of employees in employee table who are a either manager or
+a clerk in department 50.
+
+select empno,name from employee where (job='MNGR' or job='CLRK') and depno=50;
+
+     EMPNO NAME
+---------- ---------------
+       110 Tina
+       210 Rita
+
+13. List the name of employee who are neither a clerk nor a salesman.
+
+select name from employee where job <> 'CLRK' and job <> 'SLSM';
+
+NAME
+---------------
+Roy
+Watson
+Alan
+Karthika
+Rita
+Simpson
+Deepa
+
+14. Return details of all clerks working in departments other than department 10.
+
+select * from employee where job='CLRK' and depno <> 10;
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       110 Tina 	   CLRK 		18000			      50
+F
+
+15. Find names of employees containing letters U and E.
+
+select name from employee where name like '%U%E%' and name like '%U%E%';
+
+no rows selected
+
+16. List all employee who earned commission.
+
+select * from employee where comm>0;
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       101 Smitha	   SLSM 		25000 1300		      40
+F
+
+       109 Alan 	   MNGR 		30000 8000		      40
+M
+
+       220 Soosan	   SLSM 		28500 5300		      60
+F
+
+17. Find EMPNO ,NAME and JOB of all females who are not managers.
+
+select empno,name,job from employee where job <> 'MNGR' and sex='F';
+
+     EMPNO NAME 	   JOB
+---------- --------------- ---------------
+       101 Smitha	   SLSM
+       110 Tina 	   CLRK
+       213 Manacy	   CLRK
+       215 Deepa	   ANLST
+       220 Soosan	   SLSM
+
+18.Find EMPNO,NAME and SALARY of all employees who earn more than 10000 but less
+than 40000.
+select empno,name,salary from employee where salary>10000 and salary<40000;
+
+     EMPNO NAME 	       SALARY
+---------- --------------- ----------
+       100 Wilson		17000
+       101 Smitha		25000
+       103 Roy			35000
+       109 Alan 		30000
+       110 Tina 		18000
+       200 Karthika		29000
+       210 Rita 		36500
+       213 Manacy		16250
+       215 Deepa		27000
+       220 Soosan		28500
+
+
+19.Use lN operator to find NAME and EMPNO of EMPLOYEE who are analyst or manager
+ordered by NAME.
+
+select name,empno from employee where job in ('ANLST','MNGR') order by name;
+
+NAME		     EMPNO
+--------------- ----------
+Alan		       109
+Deepa		       215
+Karthika	       200
+Rita		       210
+Roy		       103
+Watson		       105
+
+20.Find the employee number, name and salary who been paid commission and whose salary
+is greater than 30000 .
+select empno,name,salary from employee where comm>=0 and salary>30000;
+
+     EMPNO NAME 	       SALARY
+---------- --------------- ----------
+       105 Watson		45000
+
+
+21.Find DEP-NO ,DEP-NAME, SALARY, JOB, SEX ordered by EMPNO within
+department.
+
+select dep_no,dep_name,salary,job,sex from department,employee where dep_no=depno order by empno;
+
+    DEP_NO DEP_NAME	       SALARY JOB	      SEX
+---------- --------------- ---------- --------------- ------
+	10 Accounting		17000 CLRK	      M
+	40 Sales		25000 SLSM	      F
+	30 Research		35000 ANLST	      M
+	30 Research		45000 MNGR	      M
+	40 Sales		30000 MNGR	      M
+	50 Manufacturing	18000 CLRK	      F
+	10 Accounting		29000 MNGR	      F
+	50 Manufacturing	36500 MNGR	      F
+	10 Accounting		16250 CLRK	      F
+	60 Shipping		 8250 DRVR	      M
+	60 Shipping		27000 ANLST	      F
+
+    DEP_NO DEP_NAME	       SALARY JOB	      SEX
+---------- --------------- ---------- --------------- ------
+	60 Shipping		28500 SLSM	      F
+
+22.Display the name of employee and dependant name if dependant is staying in the same
+location where employee is working.
+
+select employee.name,dependent.fname from employee,department,dependent where employee.depno=department.dep_no and department.loc=dependent.place and employee.empno=dependent.empno;
+
+NAME		FNAME
+--------------- ---------------
+Simpson 	Anu
+
+
+23.Find company location of employee named Watson.
+select loc from department,employee where dep_no=depno and name='Watson';
+
+LOC
+---------------
+Cochin
+
+24.Find name, EMPNO,DEP-NAME for all employee who work in ‘Trichur’ and order by
+EMPNO in descending order
+
+select empno,dep_name from department,employee where dep_no=depno and loc='Trichur' order by empno desc;
+
+     EMPNO DEP_NAME
+---------- ---------------
+       109 Sales
+       101 Sales
+
+25.Retrieve NAME and SALARY of all employee who earned more than average salary.
+
+select name,salary from employee where salary>(select avg(salary) from employee);
+
+NAME		    SALARY
+--------------- ----------
+Roy		     35000
+Watson		     45000
+Alan		     30000
+Karthika	     29000
+Rita		     36500
+Deepa		     27000
+Soosan		     28500
+
+7 rows selected.
+
+26.Find NAME, JOB, DEP NAME, LOCATION of all female employee order by
+EMPNAME.
+
+select name,job,dep_name,loc from department,employee where dep_no=depno and sex='F' order by name;   
+
+NAME		JOB		DEP_NAME	LOC
+--------------- --------------- --------------- ---------------
+Deepa		ANLST		Shipping	Trivandrum
+Karthika	MNGR		Accounting	Cochin
+Manacy		CLRK		Accounting	Cochin
+Rita		MNGR		Manufacturing	Kottayam
+Smitha		SLSM		Sales		Trichur
+Soosan		SLSM		Shipping	Trivandrum
+Tina		CLRK		Manufacturing	Kottayam
+
+
+27.Find the EMPNAME,DEP,NAME of all manager order by department name.
+
+select name,dep_name from department,employee where dep_no=depno and job='MNGR' order by dep_name;
+
+NAME		DEP_NAME
+--------------- ---------------
+Karthika	Accounting
+Rita		Manufacturing
+Watson		Research
+Alan		Sales
+
+28.Find NAME and DEP-NAME of employee who earns highest salary.
+
+select name,dep_name from department,employee where dep_no=depno and salary=(select max(salary) from employee);
+
+NAME		DEP_NAME
+--------------- ---------------
+Watson		Research
+
+29.Find name, department name, commission of all employee who paid commission order by
+name.
+
+select name,dep_name,comm from department,employee where dep_no=depno and comm>=0 order by name;
+
+NAME		DEP_NAME	COMM
+--------------- --------------- ---------------
+Alan		Sales		8000
+Smitha		Sales		1300
+Soosan		Shipping	5300
+Watson		Research	0
+
+30.Display employee name and department name of all employees working in departments
+that has at least three employees. Order the output in alphabetical order first by department
+name and then by employee name.
+
+select name,dep_name from department,employee where dep_no=depno and depno in (select depno from employee group by depno having count(*) >=3) order by dep_name,name;
+
+NAME		DEP_NAME
+--------------- ---------------
+Karthika	Accounting
+Manacy		Accounting
+Wilson		Accounting
+Deepa		Shipping
+Simpson 	Shipping
+Soosan		Shipping
+
+31.Find name, department name and commission of all employees who NOT paid
+commission order by name.
+
+select name,dep_name,comm from department,employee where dep_no=depno and comm is NULL order by name;
+
+NAME		DEP_NAME	COMM
+--------------- --------------- ---------------
+Deepa		Shipping
+Karthika	Accounting
+Manacy		Accounting
+Rita		Manufacturing
+Roy		Research
+Simpson 	Shipping
+Tina		Manufacturing
+Wilson		Accounting
+
+32.List name and salary of all employee in department number l0 and 30.
+
+select name,salary from employee where depno=10 or depno=30;
+
+NAME		    SALARY
+--------------- ----------
+Wilson		     17000
+Roy		     35000
+Watson		     45000
+Karthika	     29000
+Manacy		     16250
+
+33.List jobs of employees in department 30 which are not done in department 40.
+
+select job from employee where depno=30 and job not in (select distinct job from employee where depno=40);
+
+JOB
+---------------
+ANLST
+
+34.List out job and salary of employees in department l0 and 40 who draw the same salary
+(result- no record found).
+
+
+select job,salary from employee where depno=10 or depno=40 and salary in (select distint salary from employee where depno=10 and salary in  (select distint salary from employee where depno=40))
+
+35.Create a view to display EMPNO' NAME ' JOB of employee from employee table who
+works as manager.
+
+create view table1 as select empno,name,job from employee where job='MNGR';
+
+36.Select EMPNO, NAME,JOB and SALARY of employee who works as clerk and having
+salary greater than 1650.
+
+select empno,name,job,salary from employee where job='CLRK' and salary>1650;
+
+     EMPNO NAME 	   JOB		       SALARY
+---------- --------------- --------------- ----------
+       100 Wilson	   CLRK 		17000
+       110 Tina 	   CLRK 		18000
+       213 Manacy	   CLRK 		16250
+
+37.Create an index for column FNAME and LNAME in Dependant table.
+
+create index ind on dependent(fname,lname);
+
+Index created.
+
+38.Delete person with ID=1031 in Dependant table.
+
+delete from dependent where pid=1031;
+
+1 row deleted.
+
+select * from dependent;
+
+       PID FNAME	   LNAME	   PLACE		EMPNO
+---------- --------------- --------------- --------------- ----------
+      1010 Anu		   Jose 	   Trivandrum		  214
+      1020 Neenu	   Thomas	   Kollam		  200
+      1022 Anamika	   Thampi	   Kollam		  200
+
+
+39.Return EMPNO,NAME and SALARY of any one of the females in department 10.
+
+select empno,name,salary from employee where depno=10 and sex='F' and ROWNUM=1;
+
+     EMPNO NAME 	       SALARY
+---------- --------------- ----------
+       200 Karthika		29000
+
+40.Delete the employee Karthika with all her dependants.
+
+delete from dependent where empno=(select empno from employee where name='Karthika');
+delete from employee where name='Karthika';
+select * from employee;
+
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       100 Wilson	   CLRK 		17000			      10
+M
+
+       101 Smitha	   SLSM 		25000 1300		      40
+F
+
+       103 Roy		   ANLST		35000			      30
+M
+
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       105 Watson	   MNGR 		45000 0 		      30
+M
+
+       109 Alan 	   MNGR 		30000 8000		      40
+M
+
+       110 Tina 	   CLRK 		18000			      50
+F
+
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       210 Rita 	   MNGR 		36500			      50
+F
+
+       213 Manacy	   CLRK 		16250			      10
+F
+
+       214 Simpson	   DRVR 		 8250			      60
+M
+
+
+     EMPNO NAME 	   JOB		       SALARY COMM		   DEPNO
+---------- --------------- --------------- ---------- --------------- ----------
+SEX
+------
+       215 Deepa	   ANLST		27000			      60
+F
+
+       220 Soosan	   SLSM 		28500 5300		      60
+F
+
+select * from dependent;
+
+       PID FNAME	   LNAME	   PLACE		EMPNO
+---------- --------------- --------------- --------------- ----------
+      1010 Anu		   Jose 	   Trivandrum		  214
+
+

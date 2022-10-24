@@ -1,0 +1,186 @@
+create table customer1(custid number(8) not null,custname varchar2(15) not null,city varchar2(15) not null,amt number(8) not null,discount number(8) not null,sid varchar2(15) not null);
+
+insert into customer1 values(100,'Deepa','Trivandrum',1050,2,'K0010');
+insert into customer1 values(101,'Don','Trivandrum',8040,4,'K0010');
+insert into customer1 values(102,'Manacy','Kollam',20030,6,'A200tmp');
+insert into customer1 values(103,'Karthika','Ernakulam',8400,20,'EkmX1050');
+insert into customer1 values(104,'Tulasi','Ernakulam',2500,2,'EkmY2342');
+insert into customer1 values(105,'Roy','Trivandrum',2900,4,'L1045');
+insert into customer1 values(106,'Vivek','Trivandrum',3200,8,'L1045');
+insert into customer1 values(108,'Bhasi','Kottayam',12860,10,'KtmP1028');
+insert into customer1 values(109,'Anurag','Kottayam',3860,12,'KtmB158tmp');
+insert into customer1 values(110,'antony','Kottayam',9800,8,'KtmP1028');
+insert into customer1 values(111,'Meeran','Trichur',6700,6,'R3085');
+
+
+Write Queries for the following
+1. Select all customers with a customername starting with "a"
+
+select * from customer1 where custname like 'a%';
+
+    CUSTID CUSTNAME	   CITY 		  AMT	DISCOUNT SID
+---------- --------------- --------------- ---------- ---------- ---------------
+       110 antony	   Kottayam		 9800	       8 KtmP1028
+
+2. Select all customers with a customername starting with "a" or "A"
+select * from customer1 where custname like 'a%' or custname like 'A%';
+
+    CUSTID CUSTNAME	   CITY 		  AMT	DISCOUNT SID
+---------- --------------- --------------- ---------- ---------- ---------------
+       109 Anurag	   Kottayam		 3860	      12 KtmB158tmp
+       110 antony	   Kottayam		 9800	       8 KtmP1028
+
+3. Modify customer names such that all customer names start with a capital letter
+
+update customer1 set custname=concat(upper(substr(custname,1,1)),substr(custname,2));
+
+4. Find city values ending with "a"
+
+select * from customer1;
+
+    CUSTID CUSTNAME	   CITY 		  AMT	DISCOUNT SID
+---------- --------------- --------------- ---------- ---------- ---------------
+       100 Deepa	   Trivandrum		 1050	       2 K0010
+       101 Don		   Trivandrum		 8040	       4 K0010
+       102 Manacy	   Kollam		20030	       6 A200tmp
+       103 Karthika	   Ernakulam		 8400	      20 EkmX1050
+       104 Tulasi	   Ernakulam		 2500	       2 EkmY2342
+       105 Roy		   Trivandrum		 2900	       4 L1045
+       106 Vivek	   Trivandrum		 3200	       8 L1045
+       108 Bhasi	   Kottayam		12860	      10 KtmP1028
+       109 Anurag	   Kottayam		 3860	      12 KtmB158tmp
+       110 Antony	   Kottayam		 9800	       8 KtmP1028
+       111 Meeran	   Trichur		 6700	       6 R3085
+
+5. Return first 3 characters of salesman_ID //left
+select substr(sid,1,3) from customer1;
+
+SUBSTR(SID,1
+------------
+K00
+K00
+A20
+Ekm
+Ekm
+L10
+L10
+Ktm
+Ktm
+Ktm
+R30
+
+6. Find salesmanids with "tmp" in any position
+
+select sid from customer1 where sid like '%tmp%';
+
+SID
+---------------
+A200tmp
+KtmB158tmp
+
+7. Find count of city values that start with "T"
+
+select count(*) from customer1 where city like 'T%';
+
+  COUNT(*)
+----------
+	 5
+
+8. Select customer names starting with D and of atleast 4 characters
+
+select custname from customer1 where custname like 'D%' and length(custname)>=4;
+
+CUSTNAME
+---------------
+Deepa
+
+9. Finds city values that start with "K" and are at least 2 characters in length
+
+select distinct city from customer1 where city like 'K%' and length(city)>=2;
+
+CITY
+---------------
+Kottayam
+Kollam
+
+10. Finds city values that start with "K" and are at least 7 characters in length
+
+select distinct city from customer1 where city like 'K%' and length(city)>=7;
+
+CITY
+---------------
+Kottayam
+
+11. Finds city values that start with "K" and ends with "m"
+
+select distinct city from customer1 where city like 'K%m';
+
+CITY
+---------------
+Kottayam
+Kollam
+
+12. Display salesman details with salesman_ID, total amount given as discount and maximum
+discount provided by him in percentage with % symbol
+
+select sid,sum(amt*(discount/100)) as "Total Discount",max(discount) || '%' as "Max Discount" from customer1 group by sid;
+
+SID		Total Discount Max Discount
+--------------- -------------- -----------------------------------------
+A200tmp 		1201.8 6%
+EkmX1050		  1680 20%
+KtmB158tmp		 463.2 12%
+R3085			   402 6%
+KtmP1028		  2070 10%
+K0010			 342.6 4%
+L1045			   372 8%
+EkmY2342		    50 2%
+
+
+13. Display city names in uppercase
+
+select distinct upper(city) from customer1;
+
+UPPER(CITY)
+---------------
+KOTTAYAM
+KOLLAM
+TRIVANDRUM
+TRICHUR
+ERNAKULAM
+
+14. Update salesman_ID of all salesman from Ernakulam by removing the prefix "Ekm"
+
+update customer1 set sid=substr(sid,4) where city='Ernakulam';
+
+select * from customer1;
+
+    CUSTID CUSTNAME	   CITY 		  AMT	DISCOUNT SID
+---------- --------------- --------------- ---------- ---------- ---------------
+       100 Deepa	   Trivandrum		 1050	       2 K0010
+       101 Don		   Trivandrum		 8040	       4 K0010
+       102 Manacy	   Kollam		20030	       6 A200tmp
+       103 Karthika	   Ernakulam		 8400	      20 X1050
+       104 Tulasi	   Ernakulam		 2500	       2 Y2342
+       105 Roy		   Trivandrum		 2900	       4 L1045
+       106 Vivek	   Trivandrum		 3200	       8 L1045
+       108 Bhasi	   Kottayam		12860	      10 KtmP1028
+       109 Anurag	   Kottayam		 3860	      12 KtmB158tmp
+       110 Antony	   Kottayam		 9800	       8 KtmP1028
+       111 Meeran	   Trichur		 6700	       6 R3085
+
+15. Display total sales amount of each salesperson till today with today's date in dd-mon-yyyy
+
+select sid,sum(amt) as "Total Sales Amount",'20-10-2022' as "Today's Date" from customer1 group by sid;
+
+SID		Total Sales Amount Today's Date
+--------------- ------------------ ----------
+X1050			      8400 20-10-2022
+A200tmp 		     20030 20-10-2022
+Y2342			      2500 20-10-2022
+KtmB158tmp		      3860 20-10-2022
+R3085			      6700 20-10-2022
+KtmP1028		     22660 20-10-2022
+K0010			      9090 20-10-2022
+L1045			      6100 20-10-2022
+
